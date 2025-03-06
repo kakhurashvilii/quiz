@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,16 +11,18 @@
             font-family: 'Arial', sans-serif;
         }
         .quiz-container {
-            margin: 50px auto;
-            padding: 30px;
+            margin: 20px auto;
+            padding: 20px;
             background-color: #ffffff;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            max-width: 100%;
+            width: 100%;
+            box-sizing: border-box;
         }
         h1 {
             font-weight: bold;
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #343a40;
         }
         .question {
@@ -61,12 +63,36 @@
             transform: scale(1.05);
         }
         .error {
-            border: 1px solid red; /* Red border for unanswered questions */
+            border: 1px solid red;
+        }
+        /* Language selection */
+        .language-select {
+            position: fixed;
+            top: 10px;
+            right: 15px;
+            z-index: 9999;
+            font-size: 1.1rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 8px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .language-select a {
+            color: #007bff;
+            font-weight: bold;
+            margin-left: 15px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .language-select a:hover {
+            color: #0056b3;
+        }
+        .language-select span {
+            margin-right: 10px;
         }
     </style>
     <script>
         function validateForm(event) {
-            // Prevent form submission
             event.preventDefault();
             const questions = document.querySelectorAll('.question');
             let allAnswered = true;
@@ -76,28 +102,34 @@
                 const isAnswered = Array.from(inputs).some(input => input.checked);
                 if (!isAnswered) {
                     allAnswered = false;
-                    question.classList.add('error'); // Highlight unanswered question
+                    question.classList.add('error');
                 } else {
-                    question.classList.remove('error'); // Remove highlight if answered
+                    question.classList.remove('error');
                 }
             });
 
             if (allAnswered) {
-                // If all questions are answered, submit the form
                 document.getElementById('quizForm').submit();
             } else {
-                alert('გთხოვთ, უპასუხოთ ყველა კითხვას!'); // Alert for unanswered questions
+                alert('Please answer all the questions!');
             }
         }
     </script>
 </head>
 <body>
+    <!-- Language Selection Header -->
+    <div class="language-select">
+        <span>{{ 'Language' if language == 'en' else 'ენა' }}:</span>
+        <a href="/change_language/ka" class="btn btn-link">ქართული</a> |
+        <a href="/change_language/ru" class="btn btn-link">Русский</a>
+    </div>
+
     <div class="container quiz-container">
-        <h1 class="text-center mb-4">Quiz</h1>
+        <h1 class="text-center mb-4">{{ 'Quiz' if language == 'en' else 'კითხვარი' }}</h1>
         <form method="POST" action="/result" id="quizForm" onsubmit="validateForm(event)">
             {% for question in questions %}
                 <div class="question">
-                    <label class="font-weight-bold">{{ loop.index }}. {{ question.question }}</label> <!-- Added question number -->
+                    <label class="font-weight-bold">{{ loop.index }}. {{ question.question }}</label>
                     <div class="mt-2">
                         {% for option in question.options %}
                             <div class="form-check">
@@ -108,10 +140,8 @@
                     </div>
                 </div>
             {% endfor %}
-            <button type="submit" class="btn btn-submit btn-lg btn-block">Submit</button>
+            <button type="submit" class="btn btn-submit btn-lg btn-block">{{ 'Submit' if language == 'en' else 'გაგზავნა' }}</button>
         </form>
     </div>
-
-    
 </body>
 </html>
