@@ -35,32 +35,46 @@ def change_language(language):
     session['language'] = language
     return index()  # Redirect to index to reload questions in selected language
 
-@app.route('/result', methods=['POST'])
+@app.route('/result', methods=['POST', 'GET'])
 def submit_quiz():
+    # Get selected questions from session
     selected_questions = session.get('selected_questions', [])
     score = 0
     results = []
 
+    # Debugging: Print request form to check if data is sent correctly
+    print(request.form)
+
+    # Loop through each selected question
     for question in selected_questions:
         question_number = question['question_number']
         options = question['options']
 
         # Get selected answer from form data
-        selected_answer = request.form.get(f'question{question_number}', 'None')
+        selected_answer = request.form.get(f'question{question_number}', None)
+
+        if not selected_answer:
+            continue  # If no answer was selected, skip to the next question
 
         # Find the correct answer
         correct_answer = next((option['text'] for option in options if option['is_correct']), None)
 
         # Check if the selected answer is correct
-        if selected_answer == correct_answer:
+        is_correct = (selected_answer == correct_answer)
+        if is_correct:
             score += 1
-            is_correct = True
-        else:
-            is_correct = False
 
-        results.append((question['question'], selected_answer, correct_answer, is_correct))
+        # Add the results of the current question to the results list
+        results.append({
+            'question': question['question'],
+            'selected_answer': selected_answer,
+            'correct_answer': correct_answer,
+            'is_correct': is_correct
+        })
 
+    # Pass the score, total number of questions, and results to the result template
     return render_template('result.html', correct_count=score, total=len(selected_questions), results=results)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

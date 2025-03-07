@@ -11,13 +11,10 @@
             color: #333;
             margin: 0;
             padding: 20px;
-            position: relative;
-            height: 100vh; /* Make body full height */
-            overflow: hidden; /* Prevent horizontal scrolling */
         }
         h1 {
             text-align: center;
-            color: #9b006e; /* მაგთის ძირითადი ფერი */
+            color: #9b006e;
             font-size: 1.6em;
             margin-bottom: 10px;
         }
@@ -26,102 +23,69 @@
             font-size: 1em;
             margin-bottom: 20px;
         }
-        .table-container {
-            overflow-y: auto; /* Enable vertical scrolling */
-            max-height: calc(100vh - 120px); /* Adjust height for scrolling */
-            border: 1px solid #ddd; /* Optional: add a border around the table */
-            border-radius: 5px; /* Optional: add rounded corners */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional: add shadow */
-        }
         table {
             width: 100%;
             border-collapse: collapse;
         }
         th, td {
-            padding: 10px; /* Increased padding for better touch experience */
+            padding: 10px;
             text-align: left;
             border: 1px solid #ddd;
-            font-size: 0.9em; /* Default font size */
+            font-size: 0.9em;
         }
         th {
-            background-color: #9b006e; /* მაგთის ძირითადი ფერი */
+            background-color: #9b006e;
             color: white;
-            position: sticky; /* Make header sticky */
-            top: 0; /* Position it at the top */
-            z-index: 1; /* Ensure it is above other content */
         }
-        tr:nth-child(even) {
-            background-color: #f8f8f8;
+        .correct {
+            color: green;
         }
-        tr:hover {
-            background-color: #e0e0e0;
+        .incorrect {
+            color: red;
         }
         .back-button {
-            position: fixed; /* Fixed position at the bottom */
-            left: 50%; /* Center horizontally */
-            transform: translateX(-50%); /* Adjust for centering */
-            bottom: 20px; /* Space from the bottom */
-            background-color: #9b006e; /* მაგთის ძირითადი ფერი */
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 20px;
+            background-color: #9b006e;
             color: white;
             border: none;
             border-radius: 5px;
             padding: 10px 15px;
             font-size: 0.9em;
-            cursor: pointer;
             text-decoration: none;
-            text-align: center;
-            z-index: 2; /* Ensure it is above other content */
         }
         .back-button:hover {
-            background-color: #7a0056; /* ღილაკზე ხვის ფერი */
-        }
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.4em;
-            }
-            p {
-                font-size: 0.9em;
-            }
-            th, td {
-                padding: 8px; /* Adjust padding for mobile */
-                font-size: 0.8em; /* Reduced font size for mobile */
-            }
-        }
-        .correct {
-            color: green; /* Correct answer */
-        }
-        .incorrect {
-            color: red; /* Incorrect answer */
+            background-color: #7a0056;
         }
     </style>
 </head>
 <body>
     <h1>შედეგები</h1>
     <p>სწორი პასუხების რაოდენობა: <strong>{{ correct_count }}</strong> / <strong>{{ total }}</strong></p>
-    <div class="table-container"> <!-- Div for scrolling -->
-        <table>
-            <thead>
+    <table>
+        <thead>
+            <tr>
+                <th>კითხვა</th>
+                <th>თქვენი პასუხი</th>
+                <th>სწორი პასუხი</th>
+                <th>შეფასება</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
                 <tr>
-                    <th>კითხვა</th>
-                    <th>თქვენი პასუხი</th>
-                    <th>სწორი პასუხი</th>
-                    <th>შეფასება</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for question, selected_answer, correct_answer, is_correct in results %}
-                <tr>
-                    <td>{{ question }}</td>
-                    <td>{{ selected_answer }}</td>
-                    <td>{{ correct_answer }}</td>
-                    <td class="{{ 'correct' if is_correct else 'incorrect' }}">
-                        {{ 'სწორე' if is_correct else 'შეცდომა' }}
+                    <td>{{ result.question }}</td>
+                    <td>{{ result.selected_answer }}</td>
+                    <td>{{ result.correct_answer }}</td>
+                    <td class="{{ 'correct' if result.is_correct else 'incorrect' }}">
+                        {{ 'სწორე' if result.is_correct else 'შეცდომა' }}
                     </td>
                 </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <a href="/" class="back-button">უკან დაბრუნება</a> <!-- უკან დაბრუნების ღილაკი -->
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/" class="back-button">უკან დაბრუნება</a>
 </body>
 </html>
