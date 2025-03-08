@@ -3,89 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>შედეგები</title>
+    <title>Quiz Results</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            text-align: center;
         }
         h1 {
-            text-align: center;
-            color: #9b006e;
-            font-size: 1.6em;
-            margin-bottom: 10px;
+            color: #4CAF50;
+            font-size: 36px;
+            margin-top: 20px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 40px;
         }
         p {
-            text-align: center;
-            font-size: 1em;
-            margin-bottom: 20px;
+            font-size: 18px;
+            color: #333;
         }
         table {
-            width: 100%;
+            width: 80%;
+            margin: 20px auto;
             border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         th, td {
-            padding: 10px;
+            padding: 12px 20px;
             text-align: left;
-            border: 1px solid #ddd;
-            font-size: 0.9em;
+            border-bottom: 1px solid #ddd;
         }
         th {
-            background-color: #9b006e;
+            background-color: #4CAF50;
             color: white;
         }
-        .correct {
-            color: green;
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-        .incorrect {
-            color: red;
+        tr:hover {
+            background-color: #f1f1f1;
         }
-        .back-button {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
-            bottom: 20px;
-            background-color: #9b006e;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            font-size: 0.9em;
-            text-decoration: none;
+        .results-header {
+            margin-top: 30px;
+            font-size: 20px;
+            color: #333;
         }
-        .back-button:hover {
-            background-color: #7a0056;
+        .container {
+            width: 80%;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <h1>შედეგები</h1>
-    <p>სწორი პასუხების რაოდენობა: <strong>{{ correct_count }}</strong> / <strong>{{ total }}</strong></p>
-    <table>
-        <thead>
-            <tr>
-                <th>კითხვა</th>
-                <th>თქვენი პასუხი</th>
-                <th>სწორი პასუხი</th>
-                <th>შეფასება</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for result in results %}
+    <div class="container">
+        <h1>თქვენი შედეგები</h1>
+        <p>სკორი: <strong>{{ correct_count }} out of {{ total }}</strong></p>
+        <p>დრო: <strong>{{ time_taken }} წამი</strong></p>
+
+        <h2 class="results-header">რანინგი</h2>
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ result.question }}</td>
-                    <td>{{ result.selected_answer }}</td>
-                    <td>{{ result.correct_answer }}</td>
-                    <td class="{{ 'correct' if result.is_correct else 'incorrect' }}">
-                        {{ 'სწორე' if result.is_correct else 'შეცდომა' }}
-                    </td>
+                    <th>სრული სახელი</th>
+                    <th>სკორი</th>
+                    <th>დრო</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="/" class="back-button">უკან დაბრუნება</a>
+            </thead>
+            <tbody>
+                {% for ranking in rankings %}
+                    <tr>
+                        <td>{{ ranking['first_name'] }} {{ ranking['last_name'] }}</td>
+                        <td>{{ ranking['score'] }}</td>
+                        <td>{{ ranking['time_taken'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
